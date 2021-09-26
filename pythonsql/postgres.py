@@ -34,4 +34,67 @@ class Postgres():
         return pd.DataFrame() # Return an empty Dataframe if the response was empty
 
 
-    
+    def _exists_boolean(self, exists): # Converts the SQL response ("true" or "false" string) to boolean
+        exists = list(exists.iloc[:,0])
+        return bool(exists[0])
+
+
+    def schema_exists(self, schema):
+        statement = """
+        select exists (
+            select schema_name
+            from information_schema.schemata
+            where schema_name = '{schema}'
+        );
+        """.format(schema=schema)
+
+        return self._exists_boolean( self.execute_sql(statement) )
+
+
+    def table_exists(self, schema, table):
+        statement = """
+        select exists (
+            select * 
+            from pg_tables
+            where 1=1
+            and schemaname = '{schema}'
+            and tablename = '{table}'
+        );
+        """.format(schema=schema, table=table)
+
+        return self._exists_boolean( self.execute_sql(statement) )
+
+
+    def group_exists(self, group):
+        statement = """
+        select exists (
+            select distinct groname
+            from pg_group
+            where groname = '{group}'
+        );
+        """.format(group=group)
+
+        return self._exists_boolean( self.execute_sql(statement) )
+
+
+    def user_exists(self, user):
+        statement = """
+        select exists (
+            select distinct usename
+            from pg_user
+            where usename = '{user}'
+        );
+        """.format(user=user)
+
+        return self._exists_boolean( self.execute_sql(statement) )
+
+
+    def table_empty(self, schema, table):
+        statement = """
+        select *
+        from {schema}.{table}
+        limit 1
+        """.format(schema=schema, table=table)
+
+        df = self.execute_sql(statement)
+        return df.empty

@@ -34,6 +34,63 @@ class Postgres():
         return pd.DataFrame() # Return an empty Dataframe if the response was empty
 
 
+    def _df_to_list(self, df, colnum=0):
+        lis = list(df.iloc[:,colnum])
+        lis.sort()
+
+        return lis
+
+
+    def list_schemas(self):
+        statement = """
+        select distinct schema_name
+        from information_schema.schemata
+        """
+
+        df = self.execute_sql(statement)
+        lis = self._df_to_list(df)
+
+        return lis
+
+
+    def list_tables(self, schema):
+        statement = """
+        select distinct tablename
+        from pg_tables
+        where 1=1
+        and schemaname = '{schema}'
+        """.format(schema=schema)
+
+        df = self.execute_sql(statement)
+        lis = self._df_to_list(df)
+
+        return lis
+
+
+    def list_groups(self):
+        statement = """
+        select distinct groname
+        from pg_group
+        """
+
+        df = self.execute_sql(statement)
+        lis = self._df_to_list(df)
+
+        return lis
+
+
+    def list_users(self):
+        statement = """
+        select distinct usename
+        from pg_user
+        """
+
+        df = self.execute_sql(statement)
+        lis = self._df_to_list(df)
+
+        return lis
+
+
     def _exists_boolean(self, exists): # Converts the SQL response ("true" or "false" string) to boolean
         exists = list(exists.iloc[:,0])
         return bool(exists[0])

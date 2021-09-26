@@ -21,6 +21,26 @@ def test_execute_sql(pg):
     assert df.empty == False
 
 
+def test_list_schemas(pg):
+    schema_list = pg.list_schemas()
+    assert schema_list == ['information_schema', 'pg_catalog', 'rnacen']
+
+
+def test_list_tables(pg):
+    table_list = pg.list_tables('information_schema')
+    assert table_list == ['sql_features', 'sql_implementation_info', 'sql_languages', 'sql_packages', 'sql_parts', 'sql_sizing', 'sql_sizing_profiles']
+
+
+def test_list_groups(pg):
+    group_list = pg.list_groups()
+    assert group_list == ['pg_monitor', 'pg_read_all_settings', 'pg_read_all_stats', 'pg_signal_backend', 'pg_stat_scan_tables']
+
+
+def test_list_users(pg):
+    user_list = pg.list_users()
+    assert user_list == ['hag', 'nagios', 'postgres', 'reader', 'rnacen', 'wpk8pub']
+
+
 def test_schema_exists(pg):
     assert pg.schema_exists('rnacen') == True
 

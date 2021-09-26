@@ -155,3 +155,16 @@ class Postgres():
 
         df = self.execute_sql(statement)
         return df.empty
+
+
+    def get_table_disk_size(self, schema, table): # Returns the disk size of a given table in a pretty string format, using kB, MB, GB or TB as appropriate
+        statement = """
+        select pg_size_pretty (
+            pg_total_relation_size('"{schema}"."{table}"')
+        );
+        """.format(schema=schema, table=table)
+
+        df = self.execute_sql(statement)
+
+        return df.iloc[0,0]
+        

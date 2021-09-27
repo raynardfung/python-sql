@@ -9,7 +9,7 @@ class Postgres():
         self.password = password
         self.port     = port
 
-        self.pg8000_conn =self._create_pg8000_connection()
+        self.pg8000_conn = self._create_pg8000_connection()
 
     
     def _create_pg8000_connection(self):
@@ -167,4 +167,13 @@ class Postgres():
         df = self.execute_sql(statement)
 
         return df.iloc[0,0]
-        
+
+    
+    def get_redshift_load_errors(self): # This is an AWS Redshift specific query
+        statement = """
+        select *
+        from stl_load_errors
+        order by starttime desc
+        """
+
+        return self.execute_sql(statement)

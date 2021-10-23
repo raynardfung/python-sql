@@ -1,5 +1,5 @@
 asn1crypto==1.4.0
-attrs==21.2.0
+attrs>=20.3.0
 iniconfig==1.1.1
 numpy==1.21.3
 packaging==21.0
